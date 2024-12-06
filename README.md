@@ -123,7 +123,6 @@ Developer experience first, extremely flexible code structure and only keep what
 - 🔴 Validation library with [Zod](https://zod.dev)
 - 📏 Linter with [ESLint](https://eslint.org) (default NextJS, NextJS Core Web Vitals, Tailwind CSS and Antfu configuration)
 - 💖 Code Formatter with [Prettier](https://prettier.io)
-- 🦊 Husky for Git Hooks
 - 🚫 Lint-staged for running linters on Git staged files
 - 🚓 Lint git commit with Commitlint
 - 📓 Write standard compliant commit messages with Commitizen
@@ -218,7 +217,6 @@ After defining the environment variables in your GitHub Actions, your localizati
 .
 ├── README.md                       # README file
 ├── .github                         # GitHub folder
-├── .husky                          # Husky configuration
 ├── .storybook                      # Storybook folder
 ├── .vscode                         # VSCode configuration
 ├── migrations                      # Database migrations
