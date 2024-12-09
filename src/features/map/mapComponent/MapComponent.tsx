@@ -7,7 +7,13 @@ import styles from './MapComponent.module.scss';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || '';
 
-const MapComponent: React.FC = () => {
+type MapComponentProps = {
+  center: [number, number];
+  zoom: number;
+  geojsonData: GeoJSON.FeatureCollection;
+};
+
+const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
 
@@ -16,12 +22,16 @@ const MapComponent: React.FC = () => {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-74.5, 40],
-        zoom: 9,
+        center,
+        zoom,
         attributionControl: false,
       });
 
       mapRef.current.addControl(new mapboxgl.NavigationControl());
+
+      for (const geojson of geojsonData.features) {
+        new mapboxgl.Marker(geojson.properties?.markerOptions).setLngLat(geojson.geometry.coordinates).addTo(mapRef.current);
+      }
 
       return () => {
         if (mapRef.current) {
@@ -29,7 +39,8 @@ const MapComponent: React.FC = () => {
         }
       };
     }
-  }, []);
+    return undefined;
+  }, [center, zoom, geojsonData]);
 
   return <div ref={mapContainerRef} className={styles.mapContainer} />;
 };
