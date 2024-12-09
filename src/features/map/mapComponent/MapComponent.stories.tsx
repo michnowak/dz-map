@@ -27,9 +27,7 @@ const mockGeoJSON = {
       properties: {
         title: 'Skydive.pl',
         description: 'Description Skydive.pl',
-        markerOptions: {
-          color: '#ff0000',
-        },
+        type: 'tunnel',
       },
     },
     {
@@ -41,9 +39,7 @@ const mockGeoJSON = {
       properties: {
         title: 'SkyForce',
         description: 'Description SkyForce',
-        markerOptions: {
-          color: 'yellow',
-        },
+        type: 'dropzone',
       },
     },
   ],
