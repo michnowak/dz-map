@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
 import React, { useEffect, useRef } from 'react';
 import styles from './MapComponent.module.scss';
+import classNames from 'classnames/bind';
 
 
 import tunnelSvg from '../../../../public/assets/images/tunnel.svg';
@@ -17,6 +18,9 @@ type MapComponentProps = {
   geojsonData: GeoJSON.FeatureCollection;
 };
 
+
+const cx = classNames.bind(styles);
+
 const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -25,7 +29,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData }
   const typeToImageMap: Record<string, string> = {
     tunnel: tunnelSvg,
     dropzone: dropzoneSvg,
-
   };
 
   useEffect(() => {
@@ -42,9 +45,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData }
 
       for (const marker of geojsonData.features) {
         const el = document.createElement('div');
-        el.className = styles.marker;
+        el.className = cx([styles.marker, styles[marker.properties?.type]]);
 
-        // Determine the image based on the type
+        //TODO: Add default image
         const imageSrc = typeToImageMap[marker.properties?.type] || tunnelSvg;
 
         ReactDOM.render(
