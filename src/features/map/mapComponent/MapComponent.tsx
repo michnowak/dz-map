@@ -1,14 +1,16 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Image from 'next/image';
-import ReactDOM from 'react-dom';
-import mapboxgl from 'mapbox-gl';
-import React, { useEffect, useRef } from 'react';
-import styles from './MapComponent.module.scss';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import classNames from 'classnames/bind';
+import mapboxgl from 'mapbox-gl';
+import Image from 'next/image';
+import React, { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 
-
-import tunnelSvg from '../../../../public/assets/images/tunnel.svg';
 import dropzoneSvg from '../../../../public/assets/images/dropzone.svg';
+import tunnelSvg from '../../../../public/assets/images/tunnel.svg';
+import styles from './MapComponent.module.scss';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || '';
 
@@ -16,16 +18,16 @@ type MapComponentProps = {
   center: [number, number];
   zoom: number;
   geojsonData: GeoJSON.FeatureCollection;
+  showGeocoder?: boolean;
+  showNavigation?: boolean;
 };
-
 
 const cx = classNames.bind(styles);
 
-const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData, showGeocoder, showNavigation }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
 
-  // Map types to images
   const typeToImageMap: Record<string, string> = {
     tunnel: tunnelSvg,
     dropzone: dropzoneSvg,
@@ -41,13 +43,25 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData }
         attributionControl: false,
       });
 
-      mapRef.current.addControl(new mapboxgl.NavigationControl());
+      mapRef.current.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+      if (showGeocoder) {
+        const geocoder = new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          enableGeolocation: true,
+          addressAccuracy: 'place',
+          reverseMode: 'score',
+          marker: false,
+          mapboxgl,
+        });
+
+        mapRef.current.addControl(geocoder, 'top-left');
+      }
 
       for (const marker of geojsonData.features) {
         const el = document.createElement('div');
         el.className = cx([styles.marker, styles[marker.properties?.type]]);
 
-        //TODO: Add default image
         const imageSrc = typeToImageMap[marker.properties?.type] || tunnelSvg;
 
         ReactDOM.render(
@@ -76,7 +90,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, zoom, geojsonData }
         }
       };
     }
-  }, [center, zoom, geojsonData]);
+  }, [center, zoom, geojsonData, showGeocoder, showNavigation]);
 
   return (
     <div ref={mapContainerRef} className={styles.mapContainer} />

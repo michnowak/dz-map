@@ -45,10 +45,40 @@ const mockGeoJSON = {
   ],
 };
 
-export const Default = {
+export const Default: Story = {
   args: {
     center: [21.0122, 52.2297],
     zoom: 6,
     geojsonData: mockGeoJSON as GeoJSON.FeatureCollection,
   },
-} satisfies Story;
+};
+
+export const WithNavigation: Story = {
+  args: {
+    center: [21.0122, 52.2297],
+    zoom: 6,
+    geojsonData: mockGeoJSON as GeoJSON.FeatureCollection,
+    showGeocoder: false,
+    showNavigation: true,
+  },
+};
+
+export const WithGeocoder: Story = {
+  args: {
+    center: [21.0122, 52.2297],
+    zoom: 6,
+    geojsonData: mockGeoJSON as GeoJSON.FeatureCollection,
+    showGeocoder: true,
+    showNavigation: false,
+  },
+};
+
+export const WithGeocoderAndNavigation: Story = {
+  args: {
+    center: [21.0122, 52.2297],
+    zoom: 6,
+    geojsonData: mockGeoJSON as GeoJSON.FeatureCollection,
+    showGeocoder: true,
+    showNavigation: true,
+  },
+};
